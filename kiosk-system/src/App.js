@@ -1,7 +1,5 @@
 // Import Functions for Base Home App
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainScreen from './MainScreen.js';
 import Pregnancy from './Pregnancy.js';

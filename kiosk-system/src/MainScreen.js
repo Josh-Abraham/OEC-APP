@@ -1,5 +1,4 @@
 // Import Functions for Base Home App
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import React, { Component } from 'react';
 import { Badge, Button } from 'reactstrap';
 import Proptypes from 'prop-types';

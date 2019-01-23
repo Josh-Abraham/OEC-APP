@@ -1,9 +1,7 @@
 // Import Functions for Base Home App
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import React, { Component } from 'react';
-import { Badge, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Badge, Button } from 'reactstrap';
 import Proptypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import axios from 'axios';
@@ -21,8 +19,10 @@ class Pregnancy extends Component {
 
     buttonHit() {
       const frequenciesRadio =  document.getElementsByName('contractionFrequency');
-      let radioValue = ''
-      for (var i = 0, length = frequenciesRadio.length; i < length; i++)
+      let radioValue = '';
+      let i = 0;
+      let length = 0;
+      for (i = 0, length = frequenciesRadio.length; i < length; i++)
       {
        if (frequenciesRadio[i].checked)
        {
@@ -30,12 +30,12 @@ class Pregnancy extends Component {
        }
      }
      const durationRadio =  document.getElementsByName('contractionDuration');
-     let durationValue = ''
-     for (var i = 0, length = durationValue.length; i < length; i++)
+     let durationValue = '';
+     for (i = 0, length = durationRadio.length; i < length; i++)
      {
-      if (durationValue[i].checked)
+      if (durationRadio[i].checked)
       {
-        durationValue = (durationValue[i]).id;
+        durationValue = (durationRadio[i]).id;
       }
     }
     const name = document.getElementById('fullName').value;
