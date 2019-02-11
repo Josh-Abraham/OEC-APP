@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Badge, Button } from 'reactstrap';
 import Proptypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './App.scss';
 
 class MainScreen extends Component {
     // Creating State Constructor for Main Page

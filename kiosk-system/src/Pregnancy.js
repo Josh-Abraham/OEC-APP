@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Badge, Button } from 'reactstrap';
 import Proptypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './App.scss';
 import axios from 'axios';
 
 class Pregnancy extends Component {
@@ -12,41 +12,25 @@ class Pregnancy extends Component {
       super(props);
       this.state = {
         type: 'Pregnancy',
-        hospitalName: 'Welcome to Hamilton General Hospital'
+        hospitalName: 'Welcome to Hamilton General Hospital',
+        FullName: '',
+        PhoneNumber: '0000000000',
+        waterBroke: false,
+        contractionFrequency: '',
+        contractionDuration: ''
       }
     }
 
 
     buttonHit() {
-      const frequenciesRadio =  document.getElementsByName('contractionFrequency');
-      let radioValue = '';
-      let i = 0;
-      let length = 0;
-      for (i = 0, length = frequenciesRadio.length; i < length; i++)
-      {
-       if (frequenciesRadio[i].checked)
-       {
-         radioValue = (frequenciesRadio[i]).id;
-       }
-     }
-     const durationRadio =  document.getElementsByName('contractionDuration');
-     let durationValue = '';
-     for (i = 0, length = durationRadio.length; i < length; i++)
-     {
-      if (durationRadio[i].checked)
-      {
-        durationValue = (durationRadio[i]).id;
-      }
-    }
-    const name = document.getElementById('fullName').value;
-    const number = document.getElementById('phoneNumber').value;
+      console.log(this.state);
     const data = {
       type: this.state.type,
-      waterBroken: document.getElementById('myCheck').checked,
-      frequency: radioValue,
-      duration: durationValue,
-      fullName: name,
-      number: '+1'+number,
+      waterBroken: this.state.waterBroke,
+      frequency: this.state.contractionFrequency,
+      duration: this.state.contractionDuration,
+      fullName: this.state.FullName,
+      number: '+1'+this.state.PhoneNumber,
       priority: '',
       arrivalTime: '',
       SideEffects: ['']
@@ -59,48 +43,154 @@ class Pregnancy extends Component {
          });
     }
 
+    pageTitle() {
+      return (
+        <div className="center">
+        <div className="jumbotron">
+          <h1 className="display-4" style={{ "textAlign": "center" }}>{this.state.hospitalName}</h1>
+        </div>
+        </div>
+      );
+    }
+
+
+    createTextField(label) {
+      const id = label.replace(/\s/g, '');
+
+      return (
+        <div className="textFieldBlur">
+            <legend>{`${label}:`}</legend>
+          <p>
+           <input type = "text"
+             id = {id}
+             placeholder = "Enter Here"
+             className="textFieldInput"
+             onBlur={this.getTextFieldInput.bind(this, id)}
+             />
+          </p>
+        </div>
+      );
+    }
+
+    getTextFieldInput(label) {
+      console.log(label);
+     const input = document.getElementById(label);
+      if ( input !== null ) {
+        console.log(this.state[label])
+        this.setState({ [label]: input.value });
+      }
+    }
+
+
+    // ______________________________________________________________________________________________________________
+    // CHECK BOX MAKER
+
+    checkBoxMaker(inputField, title ,label) {
+      return (
+      <div className="styleBetween">
+      <h2>
+        <div className="textHeader">{title}</div>
+      </h2>
+        <div className="form-check">
+          <input class="form-check-input" className="styleCheckBox" type="checkbox" value="" id="check1" onClick={this.checkClick.bind(this, inputField)}/>
+          <label className="form-check-label" for="defaultCheck1">
+            {label}
+          </label>
+        </div>
+      </div>
+      );
+    }
+
+    // ______________________________________________________________________________________________________________________________
+    // Check Box Action Handler
+
+    checkClick(inputField) {
+      this.setState({ [inputField]: !this.state[inputField]});
+    }
+
+
+    //______________________________________________________________________________________________________________________________
+    //RADIO BUTTON GROUP
+
+    radioGroupMaker(elements,title, group) {
+      const groupButtons = elements.map((element) => {
+          return (
+            <div>
+              <input
+                type="radio"
+                name={group}
+                id={element.id}
+                className="radioGroupElement"
+                onClick={this.radioButtonHit.bind(this, group, element.id)}
+              />
+              <label for={element.id}>{element.label}</label>
+            </div>
+          );
+      });
+      return (
+        <div className="radioGroupColumn">
+        <h2>
+          <div className="textHeader">{title}</div>
+        </h2>
+          {groupButtons}
+        </div>
+      )
+    }
+
+    //______________________________________________________________________________________________________________________________
+    //Radio button Handler
+
+    radioButtonHit(group, buttonHit) {
+      this.setState({ [group]: buttonHit });
+    }
+
+
     render() {
+      const title = this.pageTitle();
+      const fullName = this.createTextField('Full Name');
+      const phoneNumber = this.createTextField('Phone Number');
+      const waterBroke = this.checkBoxMaker('waterBroke', 'Has your water broken?','Yes or No');
+      const frequencyContent = [
+        {
+          id: '5-30',
+          label: '5 - 30 Minutues Apart'
+        },
+        {
+          id: '3-5',
+          label: '3 - 5 Minutues Apart'
+        },
+        {
+          id: '30-2',
+          label: '30 Seconds - 2 Minutues Apart'
+        }
+      ];
+      const frequencyGroup = this.radioGroupMaker(frequencyContent,  'How frequent are your contractions?', 'contractionFrequency');
+
+      const durationContent = [
+        {
+          id: '30-45',
+          label: '30 - 45 Seconds Long'
+        },
+        {
+          id: '45-60',
+          label: '45 - 60 Seconds Long'
+        },
+        {
+          id: '60-90',
+          label: '60 - 90 Seconds Long'
+        }
+      ];
+      const durationGroup = this.radioGroupMaker(durationContent,  'How long do your contractions last?', 'contractionDuration');
+
       return (
         <div>
-          <h1>
-            <Badge color="info" pill className="centreHeader">{this.state.hospitalName}</Badge>
-          </h1>
+          {title}
           <div className="flowCol">
-            <legend>Full Name</legend>
-            <p>
-              <input type = "text"
-              id = "fullName"
-              placeholder = "Full Name" />
-            </p>
-            <legend>Phone Number</legend>
-            <p>
-              <input type = "text"
-              id = "phoneNumber"
-              placeholder = "Phone Number" />
-            </p>
-            <h2>
-              <div className="textHeader"> Has your water broken?</div>
-            </h2>
-            <input type="checkbox" id="myCheck"/>
-            <h2>
-              <div className="textHeader"> How frequent are your contractions</div>
-            </h2>
-             <input type="radio" name="contractionFrequency" id="5-30"/>
-             <label for="5-30">5 - 30 Minutues Apart</label>
-             <input type="radio" name="contractionFrequency" id="3-5"/>
-             <label for="5-30">3 - 5 Minutues Apart</label>
-             <input type="radio" name="contractionFrequency" id="30-2"/>
-             <label for="5-30">30 Seconds - 2 Minutues Apart</label>
-
-             <h2>
-               <div className="textHeader"> How long do your contractions last?</div>
-             </h2>
-              <input type="radio" name="contractionDuration" id="30-45"/>
-              <label for="5-30">30 - 45 Seconds Long</label>
-              <input type="radio" name="contractionDuration" id="45-60"/>
-              <label for="5-30">45 - 60 Seconds Long</label>
-              <input type="radio" name="contractionDuration" id="60-90"/>
-              <label for="5-30">60 - 90 Seconds Long</label>
+            {fullName}
+            {phoneNumber}
+            {waterBroke}
+            {frequencyGroup}
+            {durationGroup}
             <Button onClick={this.buttonHit.bind(this)}> Save </Button>
           </div>
           </div>

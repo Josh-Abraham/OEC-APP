@@ -46,6 +46,31 @@
   padding-left: 30px;
 }
 
+.textFieldBlur {
+  display: flex;
+  flex-direction: row;
+  width: 350px;
+  justify-content: space-between;
+  padding-top: 15px;
+
+  .textFieldInput {
+    width: 150px;
+    height: 40px;
+    border-radius: 2px;
+    border-color: rgb(204, 204, 204);
+    border-width: 0.5px;
+  }
+}
+
+
+/*_______________CHECKBOX STYLE___________________*/
+.styleCheckBox {
+  transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  -webkit-transform: scale(1.5);
+  margin-right: 5px;
+}
+
 
 @keyframes App-logo-spin {
   from {

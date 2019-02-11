@@ -32,6 +32,7 @@ def home():
 @app.route("/save", methods=['GET', 'POST'])     #GET REQUEST, now we can do saving
 def save():
     formData = request.get_json() # recieve json of disease data
+    print(formData);
     type = formData['type'] # get data contained in 'type' in json
     output = -1
     if (type == "Pregnancy"):
@@ -69,16 +70,6 @@ def preg_prio(formData):
 		return 3;
 	else:
 		return 1;
-
-# File Saving Example
-@app.route("/cmd", methods=['GET', 'POST']) #GET REQUEST, now we can do saving
-def cmd():
-    content = request.get_json()
-    cmd = content['data']
-    f= open("BuyOrSell.txt","a+")
-    f.write(cmd + '\n')
-    f.close()
-    return jsonify(info='Success')
 
 
 def getPriority(p):
@@ -143,7 +134,7 @@ def messageUsers():
         client = Client("AC6e8370a90383e3af8bea340bc095d246", "30fe8f03ef04cb72f49dcae593d12161")
         client.messages.create(to=patients[i]['number'],
         						from_="+12898018067",
-        						body="SPONSIVE")
+        						body="Welcome to Hamilton General Hospital " + str(patients[i]['fullName']) + ". You are " + str(i + 1) +" in line.")
 
 if __name__ == '__main__':
     app.run(debug=True)
