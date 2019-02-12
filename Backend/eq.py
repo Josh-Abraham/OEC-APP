@@ -45,32 +45,35 @@ def save():
     return jsonify(patients);
 
 def preg_prio(formData):
-	waterBroken = formData['waterBroken']
-	if not (waterBroken):
-		return 6;
+    waterBroken = formData['waterBroken']
+    priorityLevel = 22
+    if (waterBroken):
+        priorityLevel -= 6
 
-	# if they are experiencing 1 symptom they are likely in active phase. 2+ and they are in transition
-	symptoms = formData['SideEffects']
-	num_symptoms = len(symptoms)
+    frequency = formData['frequency']
+    if (frequency == "5-30"):
+        priorityLevel -= 2
+    elif (frequency == "3-5"):
+        priorityLevel -=4
+    elif (frequency == "30-2"):
+        priorityLevel -= 6
 
-	if (num_symptoms == 1):
-		# one symptom usually indicates active phase
-		return 3;
-	elif (num_symptoms > 1):
-		return 1;
+    duration = formData['duration']
+    if (duration == "30-45"):
+        priorityLevel -= 2
+    elif (duration == "45-60"):
+        priorityLevel -= 4
+    elif (duration == "60-90"):
+        priorityLevel -= 6
 
-	#Grab data of time between contractions, and duration of contractions
-	contract_apart = formData['frequency'];
+    if(formData['fever']):
+        priorityLevel -= 1
+    if(formData['nausea']):
+        priorityLevel -= 1
+    if(formData['discharge']):
+        priorityLevel -= 1
 
-	# 5-30 minutes => early phase
-	if( contract_apart == "5-30" ):
-	       # one symptom usually indicates active phase
-           return 6;
-	elif ( contract_apart == "3-5" ):
-		return 3;
-	else:
-		return 1;
-
+    return priorityLevel
 
 def getPriority(p):
 	return p['priority'];
@@ -130,7 +133,7 @@ def getFromFiles():
 def messageUsers():
     n = len(patients)
     for i in range(n):
-        print(patients[i]['number']);
+        print(patients[i]['fullName']);
         client = Client("AC6e8370a90383e3af8bea340bc095d246", "30fe8f03ef04cb72f49dcae593d12161")
         client.messages.create(to=patients[i]['number'],
         						from_="+12898018067",

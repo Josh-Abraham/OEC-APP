@@ -14,33 +14,39 @@ class Pregnancy extends Component {
         type: 'Pregnancy',
         hospitalName: 'Welcome to Hamilton General Hospital',
         FullName: '',
-        PhoneNumber: '0000000000',
+        PhoneNumber: '',
         waterBroke: false,
         contractionFrequency: '',
-        contractionDuration: ''
+        contractionDuration: '',
+        fever: false,
+        nausea: false,
+        discharge: false
       }
     }
 
 
     buttonHit() {
-      console.log(this.state);
-    const data = {
-      type: this.state.type,
-      waterBroken: this.state.waterBroke,
-      frequency: this.state.contractionFrequency,
-      duration: this.state.contractionDuration,
-      fullName: this.state.FullName,
-      number: '+1'+this.state.PhoneNumber,
-      priority: '',
-      arrivalTime: '',
-      SideEffects: ['']
-    }
-      axios.post('http://localhost:5000/save', data)
-         .then(res => {
-           console.log(res);
-           console.log(res.data);
-           this.props.onChange('Main')
-         });
+    if (this.state.PhoneNumber.length === 10 && this.state.FullName !== '') {
+      const data = {
+        type: this.state.type,
+        waterBroken: this.state.waterBroke,
+        frequency: this.state.contractionFrequency,
+        duration: this.state.contractionDuration,
+        fullName: this.state.FullName,
+        number: '+1'+this.state.PhoneNumber,
+        priority: '',
+        arrivalTime: '',
+        fever: this.state.fever,
+        nausea: this.state.nausea,
+        discharge: this.state.discharge
+      }
+        axios.post('http://localhost:5000/save', data)
+           .then(res => {
+             console.log(res);
+             console.log(res.data);
+             this.props.onChange('Main')
+           });
+      }
     }
 
     pageTitle() {
@@ -86,11 +92,17 @@ class Pregnancy extends Component {
     // CHECK BOX MAKER
 
     checkBoxMaker(inputField, title ,label) {
+      let titleElement = null;
+      if (title !== '') {
+        titleElement = (
+          <h2>
+            <div className="textHeader">{title}</div>
+          </h2>
+        );
+      }
       return (
-      <div className="styleBetween">
-      <h2>
-        <div className="textHeader">{title}</div>
-      </h2>
+      <div>
+        {titleElement}
         <div className="form-check">
           <input class="form-check-input" className="styleCheckBox" type="checkbox" value="" id="check1" onClick={this.checkClick.bind(this, inputField)}/>
           <label className="form-check-label" for="defaultCheck1">
@@ -182,6 +194,25 @@ class Pregnancy extends Component {
       ];
       const durationGroup = this.radioGroupMaker(durationContent,  'How long do your contractions last?', 'contractionDuration');
 
+      const symptomContent = [
+        {
+          id: 'fever',
+          title: 'Are you Experiencing any other symptoms (check all that apply)?',
+          label: 'Fever'
+        },
+        {
+          id: 'nausea',
+          title: '',
+          label: 'Nausea'
+        },
+        {
+          id: 'discharge',
+          title: '',
+          label: 'Blood Discharge'
+        }
+      ]
+      const symptomButtons = symptomContent.map((element) => this.checkBoxMaker(element.id, element.title, element.label));
+
       return (
         <div>
           {title}
@@ -191,7 +222,8 @@ class Pregnancy extends Component {
             {waterBroke}
             {frequencyGroup}
             {durationGroup}
-            <Button onClick={this.buttonHit.bind(this)}> Save </Button>
+            {symptomButtons}
+            <Button className="styleBetween" onClick={this.buttonHit.bind(this)}> Submit Information </Button>
           </div>
           </div>
       );
