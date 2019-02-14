@@ -17,8 +17,10 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 CORS(app)
 
-patients = []
-arrivalTimes = []
+pregPatients = []
+pregArrivalTimes = []
+burnPatients = []
+burnArrivalTimes = []
 maxWaitTime = 3;
 
 #Basic Mounting Set
@@ -36,13 +38,21 @@ def save():
     type = formData['type'] # get data contained in 'type' in json
     output = -1
     if (type == "Pregnancy"):
-         output = preg_prio(formData);
+         output = preg_prio(formData)
+         formData['priority'] = output
+         global pregPatients
+         pregPatients = add(formData, pregPatients, pregArrivalTimes);
+         messageUsers(pregPatients);
+    elif (type == 'Burns'):
+         print('Working here on burn logic');
+         output = 20
+         formData['priority'] = output
+         global burnPatients
+         burnPatients = add(formData, burnPatients, burnPatients);
+         messageUsers(burnPatients);
 
-    formData['priority'] = output;
-    add(formData);
-    messageUsers();
 
-    return jsonify(patients);
+    return jsonify('');
 
 def preg_prio(formData):
     waterBroken = formData['waterBroken']
@@ -100,44 +110,43 @@ def sort(list):
 		for j in range(0, n-i-1):
 			if getPriority(list[j]) > getPriority(list[j+1]):
 				list[j], list[j+1] = list[j+1], list[j]
-	patients = list;
+	return list;
 
 # Adds a paitent to the list
-def add(p):
+def add(p, patientList, waitList):
 	setArrivalTime(p)
-	patients.append(p)
-	arrivalTimes.append(p)
-	sort(patients);
+	patientList.append(p)
+	return sort(patientList);
 
 # Removes a paitent from the list
-def remove(p):
-	patients.remove(p)
-	arrivalTimes.remove(p)
-	if getWaitTime(arrivalTimes[0]) >= maxWaitTime:
-		pat = arrivalTimes[0]
-		patients.remove(pat)
+def remove(p, mainList, timeList):
+	mainList.remove(p)
+	timeList.remove(p)
+	if getWaitTime(timeList[0]) >= maxWaitTime:
+		pat = timeList[0]
+		mainList.remove(pat)
 		setPriority(pat, 1)
-		patients.insert(0, pat)
-	return patients;
+		mainList.insert(0, pat)
+	return mainList;
 
 #  Writes the lists to the files
 def writeToFiles():
-	np.array(patients).tofile("patients.bin")
-	np.array(arrivalTimes).tofile("arrivalTimes.bin")
+	np.array(pregPatients).tofile("patients.bin")
+	np.array(pregArrivalTimes).tofile("arrivalTimes.bin")
 
 # Sets the lists from the files
 def getFromFiles():
-	patients = np.fromfile("patients.bin",  dtype=np.int64)
-	arrivalTimes = np.fromfile("arrivalTimes.bin",  dtype=np.int64)
+	pregPatients = np.fromfile("patients.bin",  dtype=np.int64)
+	pregArrivalTimes = np.fromfile("arrivalTimes.bin",  dtype=np.int64)
 
-def messageUsers():
-    n = len(patients)
+def messageUsers(patientList):
+    n = len(patientList)
     for i in range(n):
-        print(patients[i]['fullName']);
-        client = Client("AC6e8370a90383e3af8bea340bc095d246", "30fe8f03ef04cb72f49dcae593d12161")
-        client.messages.create(to=patients[i]['number'],
-        						from_="+12898018067",
-        						body="Welcome to Hamilton General Hospital " + str(patients[i]['fullName']) + ". You are " + str(i + 1) +" in line.")
+        print(patientList[i]['fullName']);
+        # client = Client("AC6e8370a90383e3af8bea340bc095d246", "30fe8f03ef04cb72f49dcae593d12161")
+        # client.messages.create(to=patientList[i]['number'],
+        # 						from_="+12898018067",
+        # 						body="Welcome to Hamilton General Hospital " + str(patientList[i]['fullName']) + ". You are " + str(i + 1) +" in line.")
 
 if __name__ == '__main__':
     app.run(debug=True)

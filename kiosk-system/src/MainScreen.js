@@ -15,8 +15,13 @@ class MainScreen extends Component {
     }
 
     pregnancyButton() {
-    this.props.onChange('Pregnancy')
-  }
+      this.props.onChange('Pregnancy')
+    }
+
+    burnsButton() {
+      console.log('hit');
+      this.props.onChange('Burns')
+    }
 
     render() {
       return (
@@ -28,6 +33,7 @@ class MainScreen extends Component {
             <div className="textHeader"> Please pick one of the following options:</div>
           </h2>
           <Button color="info" size="lg" className="mainButtons" outline onClick={this.pregnancyButton.bind(this)}>Pregnancy</Button>
+          <Button color="warning" size="lg" className="mainButtons" outline onClick={this.burnsButton.bind(this)}>Burn</Button>
           </div>
       );
     }

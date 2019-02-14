@@ -6,21 +6,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 import axios from 'axios';
 
-class Pregnancy extends Component {
+class Burns extends Component {
     // Creating State Constructor for Preg Page
     constructor(props) {
       super(props);
       this.state = {
-        type: 'Pregnancy',
+        type: 'Burns',
         hospitalName: 'Welcome to Hamilton General Hospital',
         FullName: '',
         PhoneNumber: '',
-        waterBroke: false,
-        contractionFrequency: '',
-        contractionDuration: '',
-        fever: false,
-        nausea: false,
-        discharge: false,
+        swelling: false,
+        blistering: false,
+        peeling: false,
+        skinColor: '',
+        weakness: false,
+        pale: false,
+        lips: false,
         showWarning: false
       }
     }
@@ -30,16 +31,17 @@ class Pregnancy extends Component {
     if (this.state.PhoneNumber.length === 10 && this.state.FullName !== '') {
       const data = {
         type: this.state.type,
-        waterBroken: this.state.waterBroke,
-        frequency: this.state.contractionFrequency,
-        duration: this.state.contractionDuration,
+        swelling: this.state.swelling,
+        blistering: this.state.blistering,
+        peeling: this.state.peeling,
+        skinColor: this.state.skinColor,
+        weakness: this.state.weakness,
+        pale: this.state.pale,
+        lips: this.state.lips,
         fullName: this.state.FullName,
         number: '+1'+this.state.PhoneNumber,
         priority: '',
-        arrivalTime: '',
-        fever: this.state.fever,
-        nausea: this.state.nausea,
-        discharge: this.state.discharge
+        arrivalTime: ''
       }
         axios.post('http://localhost:5000/save', data)
            .then(res => {
@@ -161,54 +163,44 @@ class Pregnancy extends Component {
       const title = this.pageTitle();
       const fullName = this.createTextField('Full Name');
       const phoneNumber = this.createTextField('Phone Number');
-      const waterBroke = this.checkBoxMaker('waterBroke', 'Has your water broken?','Yes or No');
-      const frequencyContent = [
+      const swelling = this.checkBoxMaker('swelling', 'Is the burn area swelling?','Yes or No');
+      const blistering = this.checkBoxMaker('blistering', 'Is the burn area blistering?','Yes or No');
+      const peeling = this.checkBoxMaker('peeling', 'Is the burn area peeling?','Yes or No');
+      const skinColor = [
         {
-          id: '5-30',
-          label: '5 - 30 Minutues Apart'
+          id: 'pinkRed',
+          label: 'Dark Pink - Light Red'
         },
         {
-          id: '3-5',
-          label: '3 - 5 Minutues Apart'
+          id: 'darkRed',
+          label: 'Dark Red - Purple'
         },
         {
-          id: '30-2',
-          label: '30 Seconds - 2 Minutues Apart'
+          id: 'black',
+          label: 'Blackened or charred'
+        },
+        {
+          id: 'white',
+          label: 'White'
         }
       ];
-      const frequencyGroup = this.radioGroupMaker(frequencyContent,  'How frequent are your contractions?', 'contractionFrequency');
-
-      const durationContent = [
-        {
-          id: '30-45',
-          label: '30 - 45 Seconds Long'
-        },
-        {
-          id: '45-60',
-          label: '45 - 60 Seconds Long'
-        },
-        {
-          id: '60-90',
-          label: '60 - 90 Seconds Long'
-        }
-      ];
-      const durationGroup = this.radioGroupMaker(durationContent,  'How long do your contractions last?', 'contractionDuration');
+      const colourGroup = this.radioGroupMaker(skinColor,  'What color is your skin where burnt', 'skinColor');
 
       const symptomContent = [
         {
-          id: 'fever',
+          id: 'weakness',
           title: 'Are you Experiencing any other symptoms (check all that apply)?',
-          label: 'Fever'
+          label: 'Weakness'
         },
         {
-          id: 'nausea',
+          id: 'pale',
           title: '',
-          label: 'Nausea'
+          label: 'Pale or Clammy Skin'
         },
         {
-          id: 'discharge',
+          id: 'lips',
           title: '',
-          label: 'Blood Discharge'
+          label: 'Bluish Lips or Fingernails'
         }
       ]
       const symptomButtons = symptomContent.map((element) => this.checkBoxMaker(element.id, element.title, element.label));
@@ -224,9 +216,10 @@ class Pregnancy extends Component {
             {warningBanner}
             {fullName}
             {phoneNumber}
-            {waterBroke}
-            {frequencyGroup}
-            {durationGroup}
+            {swelling}
+            {blistering}
+            {peeling}
+            {colourGroup}
             {symptomButtons}
             <Button className="styleBetween" onClick={this.buttonHit.bind(this)}> Submit Information </Button>
           </div>
@@ -235,8 +228,8 @@ class Pregnancy extends Component {
     }
 }
 
-Pregnancy.proptypes = {
+Burns.proptypes = {
   onChange: Proptypes.func.isRequired,
 }
 
-export default Pregnancy;
+export default Burns;
