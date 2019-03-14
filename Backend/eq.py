@@ -143,10 +143,10 @@ def messageUsers(patientList):
     n = len(patientList)
     for i in range(n):
         print(patientList[i]['fullName']);
-        # client = Client("AC6e8370a90383e3af8bea340bc095d246", "30fe8f03ef04cb72f49dcae593d12161")
-        # client.messages.create(to=patientList[i]['number'],
-        # 						from_="+12898018067",
-        # 						body="Welcome to Hamilton General Hospital " + str(patientList[i]['fullName']) + ". You are " + str(i + 1) +" in line.")
+        client = 'INSERT_CODE_HERE'
+        client.messages.create(to=patientList[i]['number'],
+        						from_="+12898018067",
+        						body="Welcome to Hamilton General Hospital " + str(patientList[i]['fullName']) + ". You are " + str(i + 1) +" in line.")
 
 if __name__ == '__main__':
     app.run(debug=True)
